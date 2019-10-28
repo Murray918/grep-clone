@@ -1,10 +1,12 @@
 #![allow(unused_variables)]
 #![allow(unused_imports)]
-fn main() {
-let result = std::fs::read_to_string("test.txt");
-let content = match result {
-    Ok(content) => { content },
-    Err(error) => { panic!("Can't deal with {}, just exit here", error); }
-};
-println!("file content: {}", content);
+#[derive(Debug)]
+struct CustomError(String);
+
+fn main() -> Result<(), CustomError> {
+    let path = "party.txt";
+    let content = std::fs::read_to_string(path)
+        .map_err(|err| CustomError(format!("Error reading `{}`: {}", path, err)))?;
+    println!("file content: {}", content);
+    Ok(())
 }
