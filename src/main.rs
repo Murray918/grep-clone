@@ -1,12 +1,16 @@
 #![allow(unused_variables)]
 #![allow(unused_imports)]
-#[derive(Debug)]
-struct CustomError(String);
 
-fn main() -> Result<(), CustomError> {
+
+
+use failure::ResultExt;
+use exitfailure::ExitFailure;
+
+fn main() -> Result<(), ExitFailure> {
     let path = "party.txt";
     let content = std::fs::read_to_string(path)
-        .map_err(|err| CustomError(format!("Error reading `{}`: {}", path, err)))?;
+        .with_context(|_| format!("could not read file `{}`", path))?;
     println!("file content: {}", content);
     Ok(())
 }
+
